@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: media-server
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: deluge
+  name: deluge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: deluge
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: deluge
+    spec:
+      hostNetwork: true
+      containers:
+      - env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: America/Toronto
+        - name: UMASK_SET
+          value: "022"
+        image: linuxserver/deluge
+        imagePullPolicy: ""
+        name: deluge
+        ports:
+        - containerPort: 8112
+        - containerPort: 6881
+        resources: {}
+        volumeMounts:
+        - mountPath: /config
+          name: radarr-hostpath0
+        - mountPath: /downloads-deluge
+          name: radarr-hostpath1
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - hostPath:
+          path: /data-ssd/kubestorage/deluge/config
+        name: radarr-hostpath0
+      - hostPath:
+          path: /data/media/Downloads/deluge
+        name: radarr-hostpath1
+status: {}

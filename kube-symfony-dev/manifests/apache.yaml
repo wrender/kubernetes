@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  namespace: symfony-dev
+  labels:
+    app: apache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache
+        image: dev-symfony-apache 
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/www/symfony-dev.otherdata.com
+          name: apache-hostpath0
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /data-ssd/kubestorage/var/www/symfony-dev.otherdata.com/public_html
+        name: apache-hostpath0

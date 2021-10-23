@@ -1,0 +1,33 @@
+dnsmasq:
+  customDnsEntries:
+    - address=/dellserver.localdomain/192.168.1.6
+    - address=/deluge.localdomain/192.168.1.6
+    - address=/home-assistant.localdomain/192.168.1.5
+    - address=/nextcloud.localdomain/192.168.1.6
+
+serviceWeb:
+  http:
+    enabled: true
+    port: 80
+  https:
+    enabled: true
+    port: 443
+  type: NodePort
+
+dnsHostPort:
+  enabled: true
+  port: 53
+
+# default upstream DNS servers to use
+DNS1: "1.1.1.1"
+DNS2: "1.0.0.1"
+
+doh:
+  # set to true to enabled DNS over HTTPs via cloudflared
+  enabled: true
+
+whitelist:
+  - dellserver.localdomain
+  - home-assistant.localdomain
+  - deluge.localdomain
+  - nextcloud.localdomain

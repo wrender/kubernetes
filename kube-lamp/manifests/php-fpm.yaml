@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  namespace: web-hosting
+  labels:
+    app: php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      containers:
+      - name: php
+        image: docker-compose-otherdata_php
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9000
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/www/www.acsrenfrew.com
+          name: php-hostpath0
+        - mountPath: /var/www/www.otherdata.com
+          name: php-hostpath1
+        - mountPath: /etc/letsencrypt
+          name: php-hostpath2
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - hostPath:
+          path: /data-ssd/kubestorage/var/www/acsrenfrew.com/public_html
+        name: php-hostpath0
+      - hostPath:
+          path: /data-ssd/kubestorage/var/www/otherdata.com/public_html
+        name: php-hostpath1
+      - hostPath:
+          path: /data-ssd/kubestorage/var/www/certbot/docker-volumes/etc/letsencrypt
+        name: php-hostpath2

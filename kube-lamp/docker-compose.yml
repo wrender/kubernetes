@@ -1,0 +1,59 @@
+version: "3.2"
+services:
+  php:
+    build: './php/'
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - /root/web-hosting/acsrenfrew.com/public_html:/var/www/www.acsrenfrew.com
+      - /root/web-hosting/otherdata.com/public_html:/var/www/www.otherdata.com
+      - /root/web-hosting/certbot/docker-volumes/etc/letsencrypt:/etc/letsencrypt
+  apache:
+    build: './apache/'
+    restart: always
+    depends_on:
+      - php
+      - mariadb
+    networks:
+      - frontend
+      - backend
+    ports:
+      - "8098:80"
+      - "44399:443"
+    volumes:
+      - /root/web-hosting/acsrenfrew.com/public_html:/var/www/www.acsrenfrew.com
+      - /root/web-hosting/otherdata.com/public_html:/var/www/www.otherdata.com
+      - /root/web-hosting/certbot/docker-volumes/etc/letsencrypt:/etc/letsencrypt
+
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: XtH6I7pfTCKj
+    ports:
+      - 3306:3306
+    expose:
+      - "3306"
+    networks:
+      - backend
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - mariadb
+    ports:
+      - 8099:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - UPLOAD_LIMIT=3000000000
+    networks:
+      - backend
+      - frontend
+
+
+networks:
+  frontend:
+  backend:

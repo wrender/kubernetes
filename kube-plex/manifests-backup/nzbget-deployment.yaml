@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: media-server
+  annotations:
+    kompose.cmd: kompose convert --volumes hostPath
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nzbget
+  name: nzbget
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: nzbget
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --volumes hostPath
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: nzbget
+    spec:
+      containers:
+      - env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: America/Toronto
+        image: linuxserver/nzbget
+        imagePullPolicy: ""
+        name: nzbget
+        ports:
+        - containerPort: 6789
+        resources: {}
+        volumeMounts:
+        - mountPath: /config
+          name: nzbget-hostpath0
+        - mountPath: /downloads
+          name: nzbget-hostpath1
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - hostPath:
+          path: /data-ssd/kubestorage/nzbget/config
+        name: nzbget-hostpath0
+      - hostPath:
+          path: /data/media/Downloads/nzbget
+        name: nzbget-hostpath1
+status: {}

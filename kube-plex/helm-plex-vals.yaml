@@ -1,0 +1,32 @@
+image:
+  tag: latest
+
+kubePlex:
+  enabled: false
+
+service:
+  type: NodePort
+  port: 32400
+  nodePort: 32400
+
+ingress:
+  enabled: false
+  hosts:
+    - plex.localdomain
+
+claimToken: claim-srNpZyAdkkzyWPvCbTmt
+
+persistence:
+  data: 
+    storageClass: local-path
+    claimName: plex-data
+  config: 
+    claimName: plex-config
+
+timezone: America/Toronto
+
+## Copy these manually to the container settings in Kubernetes
+# NVIDIA_VISIBLE_DEVICES=all
+# NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+# CUDA_DRIVER_CAPABILITIES=compute,video,utility
+# ADVERTISE_IP=http://192.168.1.6:32400
